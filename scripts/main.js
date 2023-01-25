@@ -44,19 +44,24 @@ const run = async () => {
   const fromFrontierByAccountMap = new Map();
   if (config.frontiers.refresh) {
     console.log(`starting fromFrontierByAccountMap`);
-    const fromFrontierDataStr = fs.readFileSync(fromFrontierFileNm, 'UTF-8');
-    console.log(`starting fromFrontierByAccountMap`, 'read');
-    const fromFrontierData = JSON.parse(fromFrontierDataStr);
-    console.log(`starting fromFrontierByAccountMap`, 'parsed');
+    const getFromFrontierData = () => {
+      const fromFrontierDataStr = fs.readFileSync(fromFrontierFileNm, 'UTF-8');
+      console.log(`starting fromFrontierByAccountMap`, 'read');
+      const fromFrontierData = JSON.parse(fromFrontierDataStr);
+      console.log(`starting fromFrontierByAccountMap`, 'parsed');
+      return fromFrontierData;
+    };
+    const fromFrontierData = getFromFrontierData();
     const fromFrontierKeys = Object.keys(fromFrontierData);
     console.log(`starting fromFrontierByAccountMap`, 'keys');
     const max = fromFrontierKeys.length;
     const logDiff = Math.max(1, Math.round(max / 1000));
     let total = 0;
-    let logged = 0;  
+    let logged = 0;
     console.log(`starting fromFrontierByAccountMap`, 'logDiff', logDiff, 'max', max);
     for (const fromFrontierKey of fromFrontierKeys) {
-      const frontier = fromFrontierData[fromFrontierKeys];
+      const frontier = fromFrontierData[fromFrontierKey];
+      // console.log('fromFrontierByAccountMap.set', fromFrontierKey, frontier);
       fromFrontierByAccountMap.set(fromFrontierKey, frontier);
       total++;
       if (total > logged + logDiff) {

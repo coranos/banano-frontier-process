@@ -18,7 +18,7 @@
     "prettier": "prettier \"**/**.{ts,json,css,scss,html}\" --write",
     "touch": "find . -exec touch {} \\;",
     "test": "./node_modules/mocha/bin/mocha.js --recursive -t 100000 test/unit",
-    "start": "node scripts/main.js"
+    "start": "node -max-old-space-size=1700 --heapsnapshot-near-heap-limit=3 --trace-warnings scripts/main.js"
   },
   "dependencies": {
     "https-rate-limit": "^1.0.9"

@@ -128,6 +128,7 @@ const refreshBlocks = async () => {
       gap++;
     } else {
       fromSuccessors.push(toBlockInFromNode.successor);
+      fromSuccessors.push(toBlockInFromNode.contents.previous);
     }
     total++;
     if (total > logged + logDiff) {
@@ -179,6 +180,7 @@ const refreshBlocks = async () => {
 const refreshAccountData = async (fromFrontierByAccountMap) => {
   let totalMisMatch = 0;
   let totalMissing = 0;
+  let totalSkipped = 0;
   let total = 0;
   let logged = 0;
 
@@ -186,7 +188,9 @@ const refreshAccountData = async (fromFrontierByAccountMap) => {
   const logDiff = Math.max(1, Math.round(max / 1000));
   for (const [account, fromFrontier] of fromFrontierByAccountMap.entries()) {
     const accountOutFileNm = path.join(config.accounts.dir, `${account}.json`);
-    if (!fs.existsSync(accountOutFileNm)) {
+    if (fs.existsSync(accountOutFileNm)) {
+      totalSkipped++;
+    } else {
       // console.log('account', account, 'fromFrontier', fromFrontier);
       const toFrontier = await getFrontierByAccount(config.to, account);
       // const toFrontier = toFrontierByAccountMap[account];
@@ -212,10 +216,11 @@ const refreshAccountData = async (fromFrontierByAccountMap) => {
     total++;
     if (total > logged + logDiff) {
       const pctStr = ((total*100)/max).toFixed(2);
-      console.log(`to frontier count ${total} of ${max} ${pctStr}%`);
+      console.log(`to frontier skipped ${totalSkipped} count ${total} of ${max} ${pctStr}%`);
       logged = total;
     }
   }
+  console.log(`total skipped count ${totalSkipped} of + ${fromFrontierByAccountMap.size}`);
   console.log(`total missing count ${totalMissing} of + ${fromFrontierByAccountMap.size}`);
   console.log(`total mismatch count ${totalMisMatch} of + ${fromFrontierByAccountMap.size}`);
 };

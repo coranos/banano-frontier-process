@@ -41,9 +41,9 @@ const run = async () => {
     fs.closeSync(fromFrontierFilePtr);
     console.log(`finished fromFrontiers`);
   }
+  const fromFrontierByAccountMap = new Map();
   if (config.frontiers.refresh) {
     console.log(`starting fromFrontierByAccountMap`);
-    const fromFrontierByAccountMap = new Map();
     const fromFrontierDataStr = fs.readFileSync(fromFrontierFileNm, 'UTF-8');
     const fromFrontierData = JSON.parse(fromFrontierDataStr);
     const fromFrontierKeys = Object.keys(fromFrontierData);

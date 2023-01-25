@@ -45,11 +45,24 @@ const run = async () => {
   if (config.frontiers.refresh) {
     console.log(`starting fromFrontierByAccountMap`);
     const fromFrontierDataStr = fs.readFileSync(fromFrontierFileNm, 'UTF-8');
+    console.log(`starting fromFrontierByAccountMap`, 'read');
     const fromFrontierData = JSON.parse(fromFrontierDataStr);
+    console.log(`starting fromFrontierByAccountMap`, 'parsed');
     const fromFrontierKeys = Object.keys(fromFrontierData);
+    console.log(`starting fromFrontierByAccountMap`, 'keys');
+    const max = fromFrontierKeys.length;
+    const logDiff = Math.max(1, Math.round(max / 1000));
+    let total = 0;
+    let logged = 0;  
     for (const fromFrontierKey of fromFrontierKeys) {
       const frontier = fromFrontierKeys[fromFrontierKeys];
       fromFrontierByAccountMap.set(fromFrontierKey, frontier);
+      total++;
+      if (total > logged + logDiff) {
+        const pctStr = ((total*100)/max).toFixed(2);
+        console.log(`gap block ${total} of ${max} ${pctStr}%`);
+        logged = total;
+      }
     }
     console.log(`finished fromFrontierByAccountMap`);
   } else {

@@ -58,7 +58,7 @@ const run = async () => {
 
   if (config.accounts.refresh) {
     console.log(`starting refreshAccountData`);
-    await refreshAccountData();
+    await refreshAccountData(fromFrontierByAccountMap);
     console.log(`finished refreshAccountData`);
   } else {
     console.log(`skipping refreshAccountData`);
@@ -150,7 +150,7 @@ const run = async () => {
   // console.log(`total to count ${toFrontierByAccountMap.size}`);
 };
 
-const refreshAccountData = async () => {
+const refreshAccountData = async (fromFrontierByAccountMap) => {
   let totalMisMatch = 0;
   let totalMissing = 0;
   let total = 0;

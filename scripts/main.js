@@ -103,22 +103,23 @@ const refreshBlocks = async () => {
   let logged = 0;
   let gap = 0;
   const toFrontiers = [];
+  const accountDatas = [];
   for (const accountDataFileName of accountDataFileNames) {
     const fileNm = path.join(config.accounts.dir, accountDataFileName);
     const dataStr = fs.readFileSync(fileNm, 'UTF-8');
-    const accountData = JSON.parse(dataStr);
-    // const account = accountData.account;
-    // const fromFrontier = accountData.fromFrontier;
-    const toFrontier = accountData.toFrontier;
-    toFrontiers.push(toFrontier);
+    if (dataStr.length > 0) {
+      const accountData = JSON.parse(dataStr);
+      // const account = accountData.account;
+      // const fromFrontier = accountData.fromFrontier;
+      const toFrontier = accountData.toFrontier;
+      toFrontiers.push(toFrontier);
+      accountDatas.push(accountData);
+    }
   }
   const toBlockInFromNodes = await getBlocksInfo(config.from, toFrontiers);
   console.log('toBlockInFromNodes', `length`, Object.keys(toBlockInFromNodes.blocks).length);
   const fromSuccessors = [];
-  for (const accountDataFileName of accountDataFileNames) {
-    const fileNm = path.join(config.accounts.dir, accountDataFileName);
-    const dataStr = fs.readFileSync(fileNm, 'UTF-8');
-    const accountData = JSON.parse(dataStr);
+  for (const accountData of accountDatas) {
     const account = accountData.account;
     // const fromFrontier = accountData.fromFrontier;
     const toFrontier = accountData.toFrontier;
@@ -145,10 +146,7 @@ const refreshBlocks = async () => {
   total = 0;
   logged = 0;
   let logMsg = '';
-  for (const accountDataFileName of accountDataFileNames) {
-    const fileNm = path.join(config.accounts.dir, accountDataFileName);
-    const dataStr = fs.readFileSync(fileNm, 'UTF-8');
-    const accountData = JSON.parse(dataStr);
+  for (const accountData of accountDatas) {
     const account = accountData.account;
     // const fromFrontier = accountData.fromFrontier;
     const toFrontier = accountData.toFrontier;
@@ -191,6 +189,9 @@ const refreshAccountData = async (fromFrontierByAccountMap) => {
     if (fs.existsSync(accountOutFileNm)) {
       totalSkipped++;
     } else {
+      const accountOutFilePtr = fs.openSync(accountOutFileNm, 'w');
+      fs.closeSync(accountOutFilePtr);
+
       // console.log('account', account, 'fromFrontier', fromFrontier);
       const toFrontier = await getFrontierByAccount(config.to, account);
       // const toFrontier = toFrontierByAccountMap[account];

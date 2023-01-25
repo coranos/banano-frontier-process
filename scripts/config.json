@@ -1,6 +1,6 @@
 {
   "frontiers": {
-    "refresh": false,
+    "refresh": true,
     "count": 1000,
     "dir": "data/frontiers"
   },

@@ -83,6 +83,17 @@ const run = async () => {
     console.log(`skipping refreshAccountData`);
   }
 
+  if (config.blocks.refresh) {
+    console.log(`starting refreshBlocks`);
+    await refreshBlocks();
+    console.log(`finished refreshBlocks`);
+  } else {
+    console.log(`skipping refreshBlocks`);
+  }
+};
+
+
+const refreshBlocks = async () => {
   // for each account, check if the "from" node has the "to" block.
   // if the "to" block is missing, then thats the gap block.
   const accountDataFileNames = fs.readdirSync(config.accounts.dir);
@@ -166,7 +177,6 @@ const run = async () => {
   }
 
   console.log(`total gap count ${gap}`);
-  // console.log(`total to count ${toFrontierByAccountMap.size}`);
 };
 
 const refreshAccountData = async (fromFrontierByAccountMap) => {
@@ -226,12 +236,36 @@ const processBlock = async (url, blockData) => {
 
 const getBlocksInfo = async (url, hashes) => {
   httpsRateLimit.setUrl(url);
-  const req = {
-    action: 'blocks_info',
-    json_block: 'true',
-    hashes: hashes,
-  };
-  const resp = await httpsRateLimit.sendRequest(req);
+  const resp = {};
+  resp.blocks = {};
+  const max = hashes.length;
+  let logged = 0;
+  const logDiff = Math.max(1, Math.round(max / 1000));
+  for (let i = 0; i < hashes.length; i += config.blocks.count) {
+    const chunk = hashes.slice(i, i + config.blocks.count);
+    const req = {
+      action: 'blocks_info',
+      json_block: 'true',
+      hashes: chunk,
+    };
+    const chunkResp = await httpsRateLimit.sendRequest(req);
+    if (chunkResp.error !== undefined) {
+      if (chunkResp.error !== 'Block not found') {
+        return chunkResp;
+      }
+    } else {
+      for (const chunkKey of chunk) {
+        resp.blocks[chunkKey] = chunkResp.blocks[chunkKey];
+      }
+    }
+    const total = i;
+    if (total > logged + logDiff) {
+      const pctStr = ((total*100)/max).toFixed(2);
+      console.log(`continue getBlocksInfo ${total} of ${max} ${pctStr}%`);
+      logged = i;
+    }
+  }
+
   return resp;
 };
 

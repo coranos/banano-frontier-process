@@ -170,7 +170,7 @@ const refreshBlocks = async () => {
     total++;
     if (total > logged + logDiff) {
       const pctStr = ((total*100)/max).toFixed(2);
-      logMsg = `successo block ${total} of ${max} ${pctStr}%`;
+      logMsg = `successor block ${total} of ${max} ${pctStr}%`;
       console.log(logMsg);
       logged = total;
     }

@@ -188,27 +188,29 @@ const refreshAccountData = async (fromFrontierByAccountMap) => {
   const max = await getFrontierCount(config.to);
   const logDiff = Math.max(1, Math.round(max / 1000));
   for (const [account, fromFrontier] of fromFrontierByAccountMap.entries()) {
-    // console.log('account', account, 'fromFrontier', fromFrontier);
-    const toFrontier = await getFrontierByAccount(config.to, account);
-    // const toFrontier = toFrontierByAccountMap[account];
-    if (toFrontier !== undefined) {
-      if (fromFrontier != toFrontier) {
-        totalMisMatch++;
+    const accountOutFileNm = path.join(config.accounts.dir, `${account}.json`);
+    if (!fs.existsSync(accountOutFileNm)) {
+      // console.log('account', account, 'fromFrontier', fromFrontier);
+      const toFrontier = await getFrontierByAccount(config.to, account);
+      // const toFrontier = toFrontierByAccountMap[account];
+      if (toFrontier !== undefined) {
+        if (fromFrontier != toFrontier) {
+          totalMisMatch++;
 
-        const accountOutFileNm = path.join(config.accounts.dir, `${account}.json`);
-        const accountOutData = {
-          account: account,
-          fromFrontier: fromFrontier,
-          toFrontier: toFrontier,
-        };
+          const accountOutData = {
+            account: account,
+            fromFrontier: fromFrontier,
+            toFrontier: toFrontier,
+          };
 
-        const accountOutFilePtr = fs.openSync(accountOutFileNm, 'w');
-        fs.writeSync(accountOutFilePtr, JSON.stringify(accountOutData, null, 2));
-        fs.closeSync(accountOutFilePtr);
+          const accountOutFilePtr = fs.openSync(accountOutFileNm, 'w');
+          fs.writeSync(accountOutFilePtr, JSON.stringify(accountOutData, null, 2));
+          fs.closeSync(accountOutFilePtr);
         // console.log('account', account, 'fromFrontier', fromFrontier, 'toFrontier', toFrontier);
+        }
+      } else {
+        totalMissing++;
       }
-    } else {
-      totalMissing++;
     }
     total++;
     if (total > logged + logDiff) {

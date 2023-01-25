@@ -56,7 +56,7 @@ const run = async () => {
     let logged = 0;  
     console.log(`starting fromFrontierByAccountMap`, 'logDiff', logDiff, 'max', max);
     for (const fromFrontierKey of fromFrontierKeys) {
-      const frontier = fromFrontierKeys[fromFrontierKeys];
+      const frontier = fromFrontierData[fromFrontierKeys];
       fromFrontierByAccountMap.set(fromFrontierKey, frontier);
       total++;
       if (total > logged + logDiff) {

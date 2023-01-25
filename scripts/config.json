@@ -1,0 +1,11 @@
+{
+  "frontiers": {
+    "refresh": false,
+    "count": 1000,
+    "dir": "data/frontiers"
+  },
+  "accounts": {
+    "refresh": true,
+    "dir": "data/accounts"
+  }
+}

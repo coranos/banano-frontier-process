@@ -139,9 +139,6 @@ const refreshBlocks = async () => {
 
   console.log('fromSuccessors', `length`, fromSuccessors.length);
   const successorBlocksInToNodes = await getBlocksInfo(config.to, fromSuccessors);
-  if (successorBlocksInToNodes.error == 'Block not found') {
-    successorBlocksInToNodes.blocks = {};
-  }
   console.log('successorBlocksInToNodes', `length`, Object.keys(successorBlocksInToNodes.blocks).length);
 
   total = 0;

@@ -66,7 +66,7 @@ const run = async () => {
       total++;
       if (total > logged + logDiff) {
         const pctStr = ((total*100)/max).toFixed(2);
-        console.log(`gap block ${total} of ${max} ${pctStr}%`);
+        console.log(`continue fromFrontierByAccountMap ${total} of ${max} ${pctStr}%`);
         logged = total;
       }
     }

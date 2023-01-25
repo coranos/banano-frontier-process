@@ -54,7 +54,7 @@ const run = async () => {
     const logDiff = Math.max(1, Math.round(max / 1000));
     let total = 0;
     let logged = 0;  
-    console.log(`starting fromFrontierByAccountMap`, 'max', max);
+    console.log(`starting fromFrontierByAccountMap`, 'logDiff', logDiff, 'max', max);
     for (const fromFrontierKey of fromFrontierKeys) {
       const frontier = fromFrontierKeys[fromFrontierKeys];
       fromFrontierByAccountMap.set(fromFrontierKey, frontier);
